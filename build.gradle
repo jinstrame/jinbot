@@ -25,6 +25,7 @@ repositories {
 dependencies {
     compile('org.springframework.boot:spring-boot-starter',
             'org.projectlombok:lombok:+',
-            'com.github.pengrad:java-telegram-bot-api:+')
+            'com.github.pengrad:java-telegram-bot-api:+',
+            'org.apache.commons:commons-lang3:+')
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
