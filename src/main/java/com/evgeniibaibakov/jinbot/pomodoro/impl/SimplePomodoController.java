@@ -15,35 +15,18 @@ import java.util.concurrent.CompletableFuture;
 @Log4j
 public class SimplePomodoController implements PomodoController {
 
-    private static int MILLIS_IN_MINUTE = 60 * 1000;
-
     @Resource
     private PomodoRepository pomodoRepository;
 
     @Override
     public Pomodo createPomodo(String owner, int minutes, Runnable afterPomodo) {
-        final Pomodo pomodo = new Pomodo(owner, minutes);
-
-        CompletableFuture.runAsync(() -> pomodoRepository.add(pomodo))
-                .thenRunAsync(sleep(pomodo.getMinutes()))
-                .thenRunAsync(afterPomodo)
-                .thenRunAsync(() -> pomodoRepository.remove(pomodo.getOwner()));
-
+        final Pomodo pomodo = new Pomodo(owner, minutes, afterPomodo);
+        pomodoRepository.add(pomodo);
         return pomodo;
     }
 
     @Override
     public Optional<Pomodo> getPomodo(String owner) {
         return pomodoRepository.find(owner);
-    }
-
-    private static Runnable sleep(int minutes) {
-        return () -> {
-            try {
-                Thread.sleep(minutes * MILLIS_IN_MINUTE);
-            } catch (Exception e) {
-                log.error(e);
-            }
-        };
     }
 }
